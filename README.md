@@ -2,4 +2,4 @@
 
 ## Watch
 
-CompileDaemon -build="go build ." -command="./hello"
+start.sh

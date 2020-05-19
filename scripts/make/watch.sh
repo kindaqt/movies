@@ -1,0 +1,1 @@
+CompileDaemon -build="go build ." -command="./hello"
