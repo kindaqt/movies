@@ -8,5 +8,6 @@ import (
 func main() {
 	fmt.Println("hello, world")
 
-	server.Router()
+	router := server.Router()
+	router.Run()
 }
