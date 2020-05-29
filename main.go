@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"hello/server"
+
+	server "github.com/kindaqt/movies/api/server"
 )
 
 func main() {
