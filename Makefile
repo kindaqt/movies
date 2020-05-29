@@ -22,7 +22,7 @@ run:
 deps:
 	# $(GOGET) github.com/markbates/goth
 hot-reload:
-	CompileDaemon -build="go build -o ./out/$(BINARY_NAME)" -command="./out/$(BINARY_NAME)" -log-prefix=false -color=true -graceful-kill=true
+	CompileDaemon -build="go build -o ./out/$(BINARY_NAME)" -command="./out/$(BINARY_NAME)" -log-prefix=false -color=true -exclude-dir=".git"
 
 DOCKER_CONTAINER_NAME=movies-api
 

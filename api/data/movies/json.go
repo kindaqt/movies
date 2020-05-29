@@ -15,7 +15,7 @@ type JsonStore struct {
 	JsonFilePath string
 }
 
-func New() *JsonStore {
+func NewJsonStore() *JsonStore {
 	return &JsonStore{
 		JsonFilePath: "server/data/movies/movies.json",
 	}
@@ -54,23 +54,6 @@ func (p *JsonStore) UpdateWatched(id string, value bool) error {
 	}
 
 	return nil
-}
-
-////////////////////////////////////////
-// Adapter
-//////////////////////////////////////
-type JsonAdapter struct {
-	JsonStore *JsonStore
-}
-
-///////////////////////////////////////
-// Structs
-/////////////////////////////////////
-
-type Movie struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Watched bool   `json:"watched"`
 }
 
 ///////////////////////////////////////
