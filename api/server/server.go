@@ -1,8 +1,8 @@
 package server
 
 import (
-	"hello/server/handlers"
-	"hello/server/middleware"
+	handlers "github.com/kindaqt/movies/api/handlers"
+	"github.com/kindaqt/movies/api/middleware"
 
 	"github.com/gin-gonic/gin"
 )

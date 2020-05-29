@@ -1,16 +1,19 @@
 package handlers
 
 import (
-	data "hello/server/data/movies"
 	"log"
 	"net/http"
+
+	data "github.com/kindaqt/movies/api/data/movies"
 
 	"github.com/gin-gonic/gin"
 )
 
+var dataPersister = data.Client{Store: &data.JsonStore{JsonFilePath: "api/data/movies/movies.json"}}
+
 // GetMoviesHandler handles requests to get movies
 func GetMoviesHandler(c *gin.Context) {
-	jsonData, err := data.GetMovies()
+	jsonData, err := dataPersister.GetMovies()
 	if err != nil {
 		log.Println(err)
 		c.Status(500)
@@ -33,7 +36,7 @@ func UpdateWatchedHandler(c *gin.Context) {
 	}
 
 	// Update Value
-	if err := data.UpdateWatched(body.ID, body.Value); err != nil {
+	if err := dataPersister.UpdateWatched(body.ID, body.Value); err != nil {
 		if err.Error() == "invalid id" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		} else {
