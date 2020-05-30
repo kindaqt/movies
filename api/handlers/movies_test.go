@@ -12,10 +12,13 @@ import (
 )
 
 type MockPersister struct {
-	JsonFilePath string
 }
 
-func (p *MockPersister) GetMovies() (interface{}, error) {
+func NewMockStore() data.Store {
+	return &MockPersister{}
+}
+
+func (p *MockPersister) GetMovies() ([]data.Movie, error) {
 	var movies = []data.Movie{data.Movie{"0", "The Dark Knight", true}}
 	return movies, nil
 }
@@ -30,15 +33,12 @@ func TestGetMoviesHandler(t *testing.T) {
 	c, _ := gin.CreateTestContext(w)
 
 	// Setup Dependencies
-	client := &data.Client{
-		Store: &MockPersister{
-			JsonFilePath: "./test/data/movies.json",
-		},
+	h := Persister{
+		Store: NewMockStore(),
 	}
-	dataPersister = *client
 
 	// Run Test
-	GetMoviesHandler(c)
+	h.GetMoviesHandler(c)
 
 	// Assertions
 	var expectedBody = `[{"id":"0","title":"The Dark Knight","watched":true}]`

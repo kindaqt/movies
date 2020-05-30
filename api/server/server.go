@@ -1,6 +1,7 @@
 package server
 
 import (
+	data "github.com/kindaqt/movies/api/data/movies"
 	handlers "github.com/kindaqt/movies/api/handlers"
 	"github.com/kindaqt/movies/api/middleware"
 
@@ -9,10 +10,19 @@ import (
 
 func Router() *gin.Engine {
 	r := gin.Default()
+
 	r.Use(middleware.CORSMiddleware())
 	r.GET("/healthz", handlers.HealthzHandler)
-	r.GET("/movies", handlers.GetMoviesHandler)
-	r.PATCH("/movies/watched", handlers.GetMoviesHandler)
+
+	// Movies
+	h := handlers.Persister{
+		Store: data.NewJsonStore("./api/data/movies/movies.json"),
+	}
+	r.Group("/movies")
+	{
+		r.GET("/movies", h.GetMoviesHandler)
+		r.PATCH("/movies/watched", h.UpdateWatchedHandler)
+	}
 
 	return r
 }

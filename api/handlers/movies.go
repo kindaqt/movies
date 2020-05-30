@@ -9,11 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var dataPersister = data.Client{Store: &data.JsonStore{JsonFilePath: "api/data/movies/movies.json"}}
+type Persister struct {
+	Store data.Store
+}
 
 // GetMoviesHandler handles requests to get movies
-func GetMoviesHandler(c *gin.Context) {
-	jsonData, err := dataPersister.GetMovies()
+func (p *Persister) GetMoviesHandler(c *gin.Context) {
+	log.Println("Handlers: GetMoviesHandler")
+	jsonData, err := p.Store.GetMovies()
 	if err != nil {
 		log.Println(err)
 		c.Status(500)
@@ -24,19 +27,22 @@ func GetMoviesHandler(c *gin.Context) {
 }
 
 // UpdateWatchedHandler updates watched value
-func UpdateWatchedHandler(c *gin.Context) {
+func (p *Persister) UpdateWatchedHandler(c *gin.Context) {
+	log.Println("Handlers: UpdateWatchedHandler")
 	// Parse Body
 	var body struct {
 		ID    string `json:"id"`
 		Value bool   `json:"value"`
 	}
 	if err := c.ShouldBindJSON(&body); err != nil {
+		log.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	// Update Value
-	if err := dataPersister.UpdateWatched(body.ID, body.Value); err != nil {
+	if err := p.Store.UpdateWatched(body.ID, body.Value); err != nil {
+		log.Println(err)
 		if err.Error() == "invalid id" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		} else {
