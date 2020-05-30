@@ -2,8 +2,10 @@ package data
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 )
 
@@ -15,9 +17,10 @@ type JsonStore struct {
 	JsonFilePath string
 }
 
-func NewJsonStore() *JsonStore {
+func NewJsonStore(filePath string) Store {
+	log.Println("Json: NewJsonStore")
 	return &JsonStore{
-		JsonFilePath: "server/data/movies/movies.json",
+		JsonFilePath: filePath,
 	}
 }
 
@@ -26,7 +29,8 @@ func NewJsonStore() *JsonStore {
 //////////////////////////////////////
 
 // GetMovies returns all movies
-func (p *JsonStore) GetMovies() (interface{}, error) {
+func (p *JsonStore) GetMovies() ([]Movie, error) {
+	fmt.Println("Json: GetMovies")
 	var movies []Movie
 	if err := parseJSONFile(&movies, p.JsonFilePath); err != nil {
 		return nil, err
@@ -37,11 +41,17 @@ func (p *JsonStore) GetMovies() (interface{}, error) {
 
 // UpdateWatched updates the watch value value
 func (p *JsonStore) UpdateWatched(id string, value bool) error {
-	var movies []Movie
-	if _, movieIndex, err := findMovie(id, p.JsonFilePath); err != nil {
-		movies[movieIndex].Watched = value
-	} else {
+	fmt.Println("Json: UpdateWatched")
+	movies, err := p.GetMovies()
+	if err != nil {
 		return err
+	}
+
+	_, movieIndex, err := findMovie(id, movies)
+	if err != nil {
+		return err
+	} else {
+		movies[movieIndex].Watched = value
 	}
 
 	file, err := json.MarshalIndent(movies, "", "")
@@ -60,19 +70,17 @@ func (p *JsonStore) UpdateWatched(id string, value bool) error {
 // Utils
 /////////////////////////////////////
 
-func findMovie(id string, jsonFilePath string) (Movie, int, error) {
-	var movies []Movie
-	if err := parseJSONFile(&movies, jsonFilePath); err != nil {
-		return Movie{}, 0, err
-	}
-
+func findMovie(id string, movies []Movie) (Movie, int, error) {
+	fmt.Println("Finding movie...")
 	for i, movie := range movies {
+		fmt.Println(movie, id)
 		if movie.ID == id {
+			fmt.Println("Found movie", movie)
 			return movie, i, nil
 		}
 	}
 
-	return Movie{}, 0, fmt.Errorf("invalid id")
+	return Movie{}, 0, errors.New("invalid id")
 }
 
 func parseJSONFile(data interface{}, filePath string) error {
