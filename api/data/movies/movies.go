@@ -1,6 +1,8 @@
 package data
 
-import "log"
+import (
+	"log"
+)
 
 type Store interface {
 	GetMovies() ([]Movie, error)
@@ -18,6 +20,8 @@ func NewStore(name string) Store {
 		myStore = NewJsonStore("./data/movies/movies.json")
 	case "psql":
 		myStore = NewPsqlStore()
+	default:
+		panic("invalid store name of " + name + "please use a valid store name and try again.")
 	}
 
 	return myStore

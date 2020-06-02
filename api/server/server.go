@@ -16,8 +16,10 @@ func Router() *gin.Engine {
 
 	// Movies
 	h := handlers.Persister{
-		Store: data.NewStore("json"),
+		// Store: data.NewStore("json"),
+		Store: data.NewStore("psql"),
 	}
+
 	r.Group("/movies")
 	{
 		r.GET("/movies", h.GetMoviesHandler)

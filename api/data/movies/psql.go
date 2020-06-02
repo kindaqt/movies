@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 ////////////////////////////////////////
@@ -17,18 +18,22 @@ type PsqlStore struct {
 }
 
 func NewPsqlStore() Store {
-	return &PsqlStore{
+	s := &PsqlStore{
 		ConfigString: fmt.Sprintf("host=%v port=%v user=%v dbname=%v password=%v", host, port, user, dbname, password),
 	}
+	s.Connect()
+
+	return s
 }
 
 // TODO: move to config
 const (
+	driver   = "postgres"
 	host     = "localhost"
 	port     = 5432
-	user     = "postgres"
-	password = "my-password"
-	dbname   = "movies_db"
+	user     = "docker"
+	password = "docker"
+	dbname   = "docker"
 )
 
 ////////////////////////////////////////
@@ -38,7 +43,7 @@ const (
 // Connect to DB
 func (p *PsqlStore) Connect() {
 	// Open DB
-	db, err := gorm.Open("postgres", p.ConfigString)
+	db, err := gorm.Open(driver, p.ConfigString)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -64,7 +69,9 @@ func (p *PsqlStore) Close() error {
 
 // GetMovies returns all movies
 func (p *PsqlStore) GetMovies() ([]Movie, error) {
-	return nil, nil
+	var movies []Movie
+	p.DB.Find(&movies)
+	return movies, nil
 }
 
 // UpdateWatched updates the watch value value
