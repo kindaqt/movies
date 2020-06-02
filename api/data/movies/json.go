@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 ////////////////////////////////////////
@@ -19,8 +20,9 @@ type JsonStore struct {
 
 func NewJsonStore(filePath string) Store {
 	log.Println("Json: NewJsonStore")
+	absPath, _ := filepath.Abs(filePath)
 	return &JsonStore{
-		JsonFilePath: filePath,
+		JsonFilePath: absPath,
 	}
 }
 
@@ -31,6 +33,7 @@ func NewJsonStore(filePath string) Store {
 // GetMovies returns all movies
 func (p *JsonStore) GetMovies() ([]Movie, error) {
 	fmt.Println("Json: GetMovies")
+
 	var movies []Movie
 	if err := parseJSONFile(&movies, p.JsonFilePath); err != nil {
 		return nil, err

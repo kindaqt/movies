@@ -11,8 +11,16 @@ type store struct {
 	Store
 }
 
-func NewStore() Store {
-	return &JsonStore{}
+func NewStore(name string) Store {
+	var myStore Store
+	switch name {
+	case "json":
+		myStore = NewJsonStore("./data/movies/movies.json")
+	case "psql":
+		myStore = NewPsqlStore()
+	}
+
+	return myStore
 }
 
 func (c *store) GetMovies() ([]Movie, error) {
