@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 ////////////////////////////////////////
@@ -17,10 +18,15 @@ type JsonStore struct {
 	JsonFilePath string
 }
 
-func NewJsonStore(filePath string) Store {
+func NewJsonStore(filePath string) (Store, error) {
 	log.Println("Json: NewJsonStore")
-	return &JsonStore{
-		JsonFilePath: filePath,
+	absPath, _ := filepath.Abs(filePath)
+	if fileExists(absPath) {
+		return &JsonStore{
+			JsonFilePath: absPath,
+		}, nil
+	} else {
+		return nil, errors.New("File does not exist.")
 	}
 }
 
@@ -31,6 +37,7 @@ func NewJsonStore(filePath string) Store {
 // GetMovies returns all movies
 func (p *JsonStore) GetMovies() ([]Movie, error) {
 	fmt.Println("Json: GetMovies")
+
 	var movies []Movie
 	if err := parseJSONFile(&movies, p.JsonFilePath); err != nil {
 		return nil, err
@@ -54,12 +61,36 @@ func (p *JsonStore) UpdateWatched(id string, value bool) error {
 		movies[movieIndex].Watched = value
 	}
 
-	file, err := json.MarshalIndent(movies, "", "")
+	if err := writeJSONFile(p.JsonFilePath, movies); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *JsonStore) DeleteMovie(id string) error {
+	movies, err := p.GetMovies()
 	if err != nil {
 		return err
 	}
 
-	if err := ioutil.WriteFile(p.JsonFilePath, file, 0644); err != nil {
+	var newMovies []Movie
+	var found bool = false
+	for i := 0; i < len(movies); i++ {
+		movie := movies[i]
+		if movie.ID == id {
+			found = true
+			newMovies = append(newMovies, movies[i+1:]...)
+		} else {
+			newMovies = append(newMovies, movie)
+		}
+	}
+
+	if !found {
+		return errors.New("invalid id")
+	}
+
+	if err := writeJSONFile(p.JsonFilePath, newMovies); err != nil {
 		return err
 	}
 
@@ -96,4 +127,25 @@ func parseJSONFile(data interface{}, filePath string) error {
 	}
 
 	return json.Unmarshal(byteValue, &data)
+}
+
+func writeJSONFile(filePath string, data interface{}) error {
+	log.Println("Marshalling JSON...")
+	file, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	log.Println("Writing JSON file...")
+	if err := ioutil.WriteFile(filePath, file, 0644); err != nil {
+		return err
+	}
+	return nil
+}
+
+func fileExists(filePath string) bool {
+	info, err := os.Stat(filePath)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }

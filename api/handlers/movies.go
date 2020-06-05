@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -19,10 +20,10 @@ func (p *Persister) GetMoviesHandler(c *gin.Context) {
 	jsonData, err := p.Store.GetMovies()
 	if err != nil {
 		log.Println(err)
-		c.Status(500)
+		c.Status(http.StatusInternalServerError)
 		return
 	}
-	c.JSON(200, jsonData)
+	c.JSON(http.StatusOK, jsonData)
 	return
 }
 
@@ -46,11 +47,41 @@ func (p *Persister) UpdateWatchedHandler(c *gin.Context) {
 		if err.Error() == "invalid id" {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		} else {
-			c.Status(500)
+			c.Status(http.StatusInternalServerError)
 		}
 		return
 	}
 
-	c.Status(200)
+	c.Status(http.StatusOK)
+	return
+}
+
+// DeleteMovieHandler deletes a movie
+func (p *Persister) DeleteMovieHandler(c *gin.Context) {
+	log.Println("Handlers: DeleteMovieHandler")
+
+	// Parse Body
+	var body struct {
+		ID string `json:"id"`
+	}
+
+	fmt.Println(body)
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Delete movie by ID
+	if err := p.Store.DeleteMovie(body.ID); err != nil {
+		if err.Error() == "invalid id" {
+			c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+		} else {
+			c.Status(http.StatusInternalServerError)
+		}
+	}
+
+	c.Status(http.StatusOK)
 	return
 }
