@@ -11,7 +11,12 @@ import (
 func Router() *gin.Engine {
 	r := gin.Default()
 
+	// Middleware
 	r.Use(middleware.CORSMiddleware())
+	// TODO: logger (ip)
+	// TODO: sessions
+
+	// Healthz
 	r.GET("/healthz", handlers.HealthzHandler)
 
 	// Movies
@@ -19,12 +24,9 @@ func Router() *gin.Engine {
 		// Store: data.NewStore("json"),
 		Store: data.NewStore("psql"),
 	}
-
-	r.Group("/movies")
-	{
-		r.GET("/movies", h.GetMoviesHandler)
-		r.PATCH("/movies/watched", h.UpdateWatchedHandler)
-	}
+	r.GET("/movies", h.GetMoviesHandler)
+	r.PATCH("/movies/watched", h.UpdateWatchedHandler)
+	r.DELETE("/movies/delete", h.DeleteMovieHandler)
 
 	return r
 }

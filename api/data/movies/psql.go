@@ -70,11 +70,18 @@ func (p *PsqlStore) Close() error {
 // GetMovies returns all movies
 func (p *PsqlStore) GetMovies() ([]Movie, error) {
 	var movies []Movie
-	p.DB.Find(&movies)
-	return movies, nil
+	err := p.DB.Find(&movies).Error
+	return movies, err
 }
 
 // UpdateWatched updates the watch value value
 func (p *PsqlStore) UpdateWatched(id string, value bool) error {
 	return nil
+}
+
+// DeleteMovie deletes a movie from the database
+func (p *PsqlStore) DeleteMovie(id string) error {
+	log.Println("Psql: DeleteMovie")
+	err := p.DB.Delete(&Movie{ID: id}).Error
+	return err
 }

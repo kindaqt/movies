@@ -7,6 +7,7 @@ import (
 type Store interface {
 	GetMovies() ([]Movie, error)
 	UpdateWatched(id string, value bool) error
+	DeleteMovie(id string) error
 }
 
 type store struct {
@@ -17,7 +18,11 @@ func NewStore(name string) Store {
 	var myStore Store
 	switch name {
 	case "json":
-		myStore = NewJsonStore("./data/movies/movies.json")
+		var err error
+		myStore, err = NewJsonStore("./data/movies/movies.json")
+		if err != nil {
+			panic(err)
+		}
 	case "psql":
 		myStore = NewPsqlStore()
 	default:
@@ -35,4 +40,9 @@ func (c *store) GetMovies() ([]Movie, error) {
 func (c *store) UpdateWatched(id string, value bool) error {
 	log.Println("Movies: UpdateWatched")
 	return c.Store.UpdateWatched(id, value)
+}
+
+func (c *store) DeleteMovie(id string) error {
+	log.Println("Movies: DeleteMovie")
+	return c.Store.DeleteMovie(id)
 }

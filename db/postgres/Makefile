@@ -19,8 +19,12 @@ test:
 ###########################
 # MIGRATE
 ###########################
-migrate:
-	# TODO: migrate up, migrate down
+migrate-up:
+	migrate -path ./migrations -database ${POSTGRESQL_URL} up
+migrate-down:
+	migrate -path ./migrations -database ${POSTGRESQL_URL} down
+migrate-version:
+	migrate -path ./migrations -database ${POSTGRESQL_URL} version
 
 ###########################
 # DEBUG

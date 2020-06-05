@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	data "github.com/kindaqt/movies/api/data/movies"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/assert/v2"
 )
 
 type MockPersister struct {
@@ -19,11 +19,15 @@ func NewMockStore() data.Store {
 }
 
 func (p *MockPersister) GetMovies() ([]data.Movie, error) {
-	var movies = []data.Movie{data.Movie{"0", "The Dark Knight", true}}
+	var movies = []data.Movie{{"0", "The Dark Knight", true}}
 	return movies, nil
 }
 
 func (p *MockPersister) UpdateWatched(id string, value bool) error {
+	return nil
+}
+
+func (p *MockPersister) DeleteMovie(id string) error {
 	return nil
 }
 

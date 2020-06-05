@@ -10,5 +10,5 @@ func main() {
 	fmt.Println("Starting Movies API")
 
 	router := server.Router()
-	router.Run()
+	router.Run(":8081")
 }
