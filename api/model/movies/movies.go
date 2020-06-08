@@ -8,6 +8,7 @@ type Store interface {
 	GetMovies() ([]Movie, error)
 	UpdateWatched(id string, value bool) error
 	DeleteMovie(id string) error
+	CreateMovie(movie *Movie) error
 }
 
 type store struct {
@@ -45,4 +46,9 @@ func (c *store) UpdateWatched(id string, value bool) error {
 func (c *store) DeleteMovie(id string) error {
 	log.Println("Movies: DeleteMovie")
 	return c.Store.DeleteMovie(id)
+}
+
+func (c *store) CreateMovie(movie *Movie) error {
+	log.Println("Movies: CreateMovie")
+	return c.Store.CreateMovie(movie)
 }

@@ -1,6 +1,9 @@
+-- Create UUID method
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Create DB
 CREATE TABLE IF NOT EXISTS movies(
-    id SERIAL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     title VARCHAR(50) NOT NULL,
     watched BOOLEAN DEFAULT FALSE
 );
