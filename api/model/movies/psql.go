@@ -67,21 +67,33 @@ func (p *PsqlStore) Close() error {
 // Methods
 //////////////////////////////////////
 
-// GetMovies returns all movies
+// GetMovies() returns all movies
 func (p *PsqlStore) GetMovies() ([]Movie, error) {
+	log.Println("Psql: GetMovies")
 	var movies []Movie
 	err := p.DB.Find(&movies).Error
 	return movies, err
 }
 
-// UpdateWatched updates the watch value value
+// UpdateWatched() updates the watch value value
 func (p *PsqlStore) UpdateWatched(id string, value bool) error {
-	return nil
+	log.Println("Psql: UpdateWatched")
+	err := p.DB.Model(&Movie{ID: id}).Update("watched", value).Error
+	return err
 }
 
-// DeleteMovie deletes a movie from the database
+// DeleteMovie() deletes a movie from the database
 func (p *PsqlStore) DeleteMovie(id string) error {
 	log.Println("Psql: DeleteMovie")
 	err := p.DB.Delete(&Movie{ID: id}).Error
+	return err
+}
+
+// CreateMovie() creates a movie record in the database
+func (p *PsqlStore) CreateMovie(movie *Movie) error {
+	log.Println("Psql: CreateMovie")
+	// TODO:
+	// - title must be unique
+	err := p.DB.Create(movie).Error
 	return err
 }

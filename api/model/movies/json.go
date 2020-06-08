@@ -69,6 +69,7 @@ func (p *JsonStore) UpdateWatched(id string, value bool) error {
 }
 
 func (p *JsonStore) DeleteMovie(id string) error {
+	fmt.Println("Json: DeleteMovie")
 	movies, err := p.GetMovies()
 	if err != nil {
 		return err
@@ -95,6 +96,12 @@ func (p *JsonStore) DeleteMovie(id string) error {
 	}
 
 	return nil
+}
+
+// CreateMovie() creates a movie record in the database
+func (p *JsonStore) CreateMovie(movie *Movie) error {
+	log.Println("Json: CreateMovie")
+	return errors.New("not supported")
 }
 
 ///////////////////////////////////////

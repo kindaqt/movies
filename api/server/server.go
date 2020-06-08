@@ -25,9 +25,9 @@ func Router() *gin.Engine {
 		Store: model.NewStore("psql"),
 	}
 	r.GET("/movies", h.GetMoviesHandler)
+	r.POST("/movies", h.CreateMovieHandler)
 	r.PATCH("/movies/:id/watched/:value", h.UpdateWatchedHandler)
 	r.DELETE("/movies/:id", h.DeleteMovieHandler)
-	// r.POST("/movies/:id", h.CreateMovieHandler)
 
 	return r
 }
