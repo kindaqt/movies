@@ -1,0 +1,1 @@
+curl -X PATCH "localhost:8080/movies/1/watched/true"
