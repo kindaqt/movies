@@ -1,0 +1,9 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0 auto; 
+  max-width: 60em;
+  line-height: 1.3;
+}
