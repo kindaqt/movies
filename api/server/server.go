@@ -1,12 +1,17 @@
 package server
 
 import (
-	model "github.com/kindaqt/movies/api/model/movies"
-	handlers "github.com/kindaqt/movies/api/server/handlers"
-	"github.com/kindaqt/movies/api/server/middleware"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kindaqt/movies/api/models"
+	"github.com/kindaqt/movies/api/server/handlers"
+	"github.com/kindaqt/movies/api/server/middleware"
 )
+
+type Server struct {
+	DataStore *models.Store
+}
 
 func Router() *gin.Engine {
 	r := gin.Default()
@@ -22,8 +27,9 @@ func Router() *gin.Engine {
 	// Movies
 	h := handlers.Persister{
 		// Store: data.NewStore("json"),
-		Store: model.NewStore("psql"),
+		Store: models.NewStore("psql"),
 	}
+	fmt.Println(h)
 	r.GET("/movies", h.GetMoviesHandler)
 	r.POST("/movies", h.CreateMovieHandler)
 	r.PATCH("/movies/:id/watched/:value", h.UpdateWatchedHandler)
