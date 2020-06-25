@@ -9,7 +9,7 @@ BINARY_UNIX=$(BINARY_NAME)_unix
 
 all: test build
 build: 
-	$(GOBUILD) -o ./$(BINARY_NAME) .
+	export GIN_MODE=release && $(GOBUILD) -o ./$(BINARY_NAME) .
 test: 
 	$(GOTEST) -v ./...
 clean: 

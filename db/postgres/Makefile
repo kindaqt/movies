@@ -1,3 +1,9 @@
+
+###############################
+## TODO: move all this into the parent makefile
+
+
+
 SHELL_CMD=bash
 DOCKER_CMD=docker
 DOCKER_COMPOSE_CMD=docker-compose

@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	data "github.com/kindaqt/movies/api/data/movies"
+	"github.com/kindaqt/movies/api/models"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/gin-gonic/gin"
@@ -14,12 +14,16 @@ import (
 type MockPersister struct {
 }
 
-func NewMockStore() data.Store {
+func NewMockStore() models.Store {
 	return &MockPersister{}
 }
 
-func (p *MockPersister) GetMovies() ([]data.Movie, error) {
-	var movies = []data.Movie{{"0", "The Dark Knight", true}}
+func (p *MockPersister) CreateMovie(movie *models.Movie) error {
+	return nil
+}
+
+func (p *MockPersister) GetMovies() ([]models.Movie, error) {
+	var movies = []models.Movie{{"0", "The Dark Knight", true}}
 	return movies, nil
 }
 

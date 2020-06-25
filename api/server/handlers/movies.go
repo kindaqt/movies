@@ -5,12 +5,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	model "github.com/kindaqt/movies/api/model/movies"
+	"github.com/kindaqt/movies/api/models"
 )
 
 type Persister struct {
-	Store model.Store
+	Store models.Store
 }
 
 ////////////////////////////
@@ -112,7 +111,7 @@ func (p *Persister) CreateMovieHandler(c *gin.Context) {
 	}
 
 	// Create movie
-	movie := model.Movie{Title: request.Title}
+	movie := models.Movie{Title: request.Title}
 	if err := p.Store.CreateMovie(&movie); err != nil {
 		log.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
